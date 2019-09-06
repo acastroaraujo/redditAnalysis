@@ -1,0 +1,40 @@
+
+
+.progress-bar{
+  background-color:#5c5b58;
+}
+
+.btn-file {
+  font-size: 12px;
+  font-family: Averta for TBWA, sans-serif;
+}
+
+.form-group{
+  font-size: 13px;
+  font-family: Averta for TBWA, sans-serif;
+}
+
+.form-control{
+  font-size: 13px;
+  font-family: Averta for TBWA, sans-serif;
+  color: black;
+}
+
+.help-block{
+    font-size: 13px;
+    font-family: Averta for TBWA, sans-serif;
+    font-weight: bold;
+    color: black;
+}
+
+tab-pane{
+    font-size: 13px;
+    font-family: Averta for TBWA, sans-serif;
+    font-weight: bold;
+    color: black;
+}
+
+.navbar-static-top{
+    font-family: Averta for TBWA, sans-serif;
+    font-weight: bold;
+}
