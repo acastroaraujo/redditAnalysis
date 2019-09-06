@@ -4,3 +4,6 @@
 .Ruserdata
 secretInfo.R
 .httr-oauth
+.ipynb_checkpoints
+prawr.html
+.DS_Store
