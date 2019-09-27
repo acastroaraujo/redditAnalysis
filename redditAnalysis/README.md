@@ -1,0 +1,1 @@
+The functions withe a `w2v_` prefix are designed to fitting and analyzing word2vec models around Reddit conversations.
