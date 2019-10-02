@@ -16,12 +16,12 @@ library(tm)
 library(textclean)
 
 
-w2v_preprocess <- function(data_frame, rs) {
+w2v_preprocess <- function(data_frame, rs = c("/r/" = "")) {
   
   output <- data_frame %>% 
-    filter(num_comments > 0) %>% 
-    select(-edge_list) %>% 
-    unnest() %>%
+    filter(num_comments > 0) %>%
+    select(-edge_list, -date, -title, -subreddit) %>% 
+    unnest(cols = node_data) %>% 
     filter(text != "[deleted]") %>% 
     mutate(text = text %>% 
              str_replace_all(pattern = "’", replacement = "'") %>% 
