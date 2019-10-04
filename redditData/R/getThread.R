@@ -1,5 +1,5 @@
 
-source("redditPackage/R/secretInfo.R")
+source("redditData/R/secretInfo.R")
 
 # ************************************************************
 # Functions 

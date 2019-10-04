@@ -1,5 +1,5 @@
 
-source("redditPackage/R/secretInfo.R")
+source("redditData/R/secretInfo.R")
 
 # *********************************
 # Replace this with the subreddit you are interested in.
@@ -13,7 +13,7 @@ downloadURLs <- function(sub) {
   sub <<- sub
   
   cat(paste0("Pulling from /r/", sub, "...\n"))
-  source_python("redditPackage/Python/get_threads.py")
+  source_python("redditData/Python/get_threads.py")
   
   subreddit_df <- tibble(
     title = py$title,
