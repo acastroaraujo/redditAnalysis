@@ -5,6 +5,9 @@ source("redditData/R/secretInfo.R")
 # Functions 
 # ************************************************************
 
+thread <- "init"
+message("Any variable in the global environment named 'thread' has now been replaced.")
+
 extractThread <- function(path) {
   
   get_date <- function(x) {
@@ -21,7 +24,7 @@ extractThread <- function(path) {
   
   py_run_string("submission = reddit.submission(url = r.thread)")
   
-  cat("\nExtracting comment forest from", path, "\n")
+  message("Extracting comment forest from", path, "\n")
   py_run_string("submission.comments.replace_more(limit = None)")
   py_run_string("index = slice(None)")
   
@@ -57,9 +60,7 @@ extractThread <- function(path) {
     subreddit = as.character(root$subreddit),
     path = root$permalink
   ) %>% 
-    mutate(date = as.POSIXct(date, origin="1970-01-01"))
-  
-  cat("\nExtracting edge list...\n")
+    mutate(date = as.POSIXct(date, origin = "1970-01-01"))
   
   output <- vector("list", length(nodes))
   for (i in seq_along(output)) {
@@ -72,7 +73,7 @@ extractThread <- function(path) {
   df <- full_join(root_df, branches_df, by = c("name", "author", "date", "children", "descendents", "text", "title", "subreddit", "path")) %>% 
     select(name, author, score, text, children, descendents, everything())
   
-  cat(paste0("\n", py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left...\n"))
+  message(paste0(py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left..."))
   
   return(list(nodes = df, edges = edge_list))
 }
