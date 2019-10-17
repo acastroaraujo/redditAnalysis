@@ -15,8 +15,8 @@ def subreddit_list(name):
 ')
 
 
-df <- read_rds("boston/boston_subreddits.rds")
-user_unique <- unique(bind_rows(df$node_data)$author)
+# df <- read_rds("boston/boston_subreddits.rds")
+# user_unique <- unique(bind_rows(df$node_data)$author)
 
 create_affiliation_network <- function(list_of_unique_users) {
   

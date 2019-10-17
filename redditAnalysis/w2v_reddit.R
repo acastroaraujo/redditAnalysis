@@ -89,9 +89,16 @@ w2v_cosine_similarity <- function(embedding, x, y = NULL) {
 }
 
 
-w2v_similarity_matrix <- function(embedding, x_list) {
-  text2vec::sim2(embedding, embedding[x_list, ], method = "cosine", norm = "l2")[x_list, ]
+w2v_similarity_matrix <- function(embedding, word_list) {
+  text2vec::sim2(embedding, embedding[word_list, ], method = "cosine", norm = "l2")[word_list, ]
 }
+
+w2v_dist_to_target <- function(embedding, target, word_list) {
+  w2v_cosine_similarity(word_vectors, target) %>% 
+    filter(word %in% word_list) %>% 
+    arrange(desc(!!sym(target)))
+}
+
 
 w2v_wordcloud <- function(embedding, n = 50, x, y = NULL, max_size = 10) {
   stopifnot(x %in% rownames(embedding))
@@ -117,7 +124,7 @@ w2v_wordcloud <- function(embedding, n = 50, x, y = NULL, max_size = 10) {
     theme(plot.title = element_text(family = "Avenir", face = "bold"),
           plot.subtitle = element_text(family = "Avenir")) + 
     scale_size_area(max_size = max_size) + 
-    scale_color_viridis_c(begin = 0.3, end = 0.85, direction = -1) +
+    scale_color_viridis_c(option = "magma",begin = 0.3, end = 0.85, direction = -1) +
     labs(title = as.character(w))
 }
 
