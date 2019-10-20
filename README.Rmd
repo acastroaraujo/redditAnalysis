@@ -3,7 +3,16 @@ output:  md_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", comment = "")
+
+## Setup
+source("secretInfo.R")
+library(tidyverse)
+library(reticulate)
+# conda_create("reddit")
+# conda_install("reddit", c("praw", "numpy"))
+use_condaenv(condaenv = "reddit")
+source_python("redditData/Python/authenticateAPI.py")
 ```
 
 I created this repository in order to as a way to work with Reddit conversations using the Python Reddit API Wrapper ([PRAW](https://praw.readthedocs.io/en/latest/))
@@ -24,22 +33,129 @@ Using the functions in `redditData/`, we download the latest 1000 threads from [
 
 > This is a subreddit for discussion on all things dealing with statistical theory, software, and application. We welcome all researchers, students, professionals, and enthusiasts looking to be a part of an online statistics community.
 
+
+```{r, eval=FALSE, echo=TRUE}
+source("redditData/R/downloadURLs.R")
+stats <- downloadSubredditURLs("statistics")
+```
+
 We can download each individual thread using the functions in `getThread.R`. The output looks something like this:
 
-insert OUTPUT data frame
+```{r, eval=FALSE, echo=TRUE}
+source("redditData/R/getThread.R")
+output <- vector("list", nrow(stats))
 
-We can then build an bipartite graph between users and subreddits using `affiliationNetwork.R`. The output looks something like this:
+for (i in seq_along(output)) {
+  output[[i]] <- try(extractThread(stats$link[[i]]))
+}
+
+stats$node_data <- map(output, pluck, 1)
+stats$edge_list <- map(output, pluck, 2)
+```
+
+```{r}
+#write_rds(stats, "stats.rds", compress = "gz")
+stats <- read_rds("stats.rds")
+```
+
+This is how the dataset looks like:
+
+```{r, echo=TRUE}
+glimpse(stats)
+glimpse(stats$node_data[[1]])
+glimpse(stats$edge_list[[1]])
+```
+
+Finally, we can then build an bipartite graph between users and subreddits using `affiliationNetwork.R`. To do this, we extract a list of unique users.
+
+```{r, echo=TRUE}
+user_df <- stats %>% 
+  filter(num_comments > 0) %>%  ## remove empty threads
+  pull(node_data) %>% 
+  bind_rows() %>% 
+  count(author) %>% 
+  filter(n > 5, author != "[deleted]") ## remove sparse users
+
+glimpse(user_df)
+```
+
+And then create the affiliation network:
+
+```{r, echo=TRUE, eval=FALSE}
+aff_net <- create_affiliation_network(user_df$author)
+error_index <- map_lgl(aff_net, get_error_index)
+aff_net <- aff_net[!error_index]
+```
+
+```{r}
+aff_net <- read_rds("aff_net.rds")
+```
+
 
 ___Analyzing the data___
 
-1. Word embeddings
+1. Visualizing individual threads
+
+```{r, message=FALSE, echo=TRUE, fig.height=8, fig.width=8}
+source("redditAnalysis/net_reddit.R")
+
+stats_subset <- stats %>% 
+  filter(str_detect(title, "Is R better than Python at anything?")) %>% 
+  mutate(graph = map2(node_data, edge_list, net_grow_tree))
 
 
-2. Visualizing individual threads
+library(ggraph)
+net_plot(stats_subset$graph[[1]], stats_subset$title[[1]], style = 3)
+```
 
+2. Clustering the bipartite graph
 
-3. Clustering the bipartite graph
+```{r, echo=TRUE}
+source("redditAnalysis/netproj_reddit.R")
 
+aff_df <- netproj_create_edgelist(aff_net)
+glimpse(aff_df)
+```
+
+```{r, echo=TRUE}
+aff_df %>% 
+  count(subreddit) %>%
+  mutate(prop = n / sum(n)) %>%
+  arrange(desc(n)) %>%
+  top_n(20) %>%
+  ggplot(aes(x = fct_reorder(subreddit, prop), y = prop)) +
+  geom_point(color = "steelblue1") +
+  coord_flip() +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(labels = scales::percent)
+```
+
+```{r, echo=TRUE, fig.width=10, fig.height=10}
+M <- netproj_subreddit_adj_mat(aff_df, min_n = 100)
+netproj_plot_n(M, N = 40)
+
+clusters <- netproj_cluster(M)
+
+netproj_plot_communities(clusters, "eigen_cluster", N = 10, ncol = 2)
+```
+
+3. Word embeddings
+
+```{r, fig.height=10, fig.width=10, echo=TRUE}
+source("redditAnalysis/w2v_reddit.R")
+
+stats_processed <- w2v_preprocess(stats)
+word_vectors <- w2v_fit(stats_processed)
+
+word_vectors %>% 
+  w2v_cosine_similarity("r")
+
+word_vectors %>% 
+  w2v_cosine_similarity("bayesian")
+
+word_vectors %>% 
+  w2v_wordcloud(x = "regression")
+```
 
 ___To do___
 

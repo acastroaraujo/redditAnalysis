@@ -1,6 +1,4 @@
 
-source("redditData/R/secretInfo.R")
-
 # *********************************
 # Replace this with the subreddit you are interested in.
 # *********************************

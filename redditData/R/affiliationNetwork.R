@@ -1,9 +1,4 @@
 
-source("redditData/R/secretInfo.R")
-library(tidyverse)
-library(reticulate)
-use_condaenv(condaenv = "reddit")
-source_python("redditData/Python/authenticateAPI.py")
 
 ## Define a function.
 py_run_string('

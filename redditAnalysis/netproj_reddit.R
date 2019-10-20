@@ -124,15 +124,15 @@ netproj_cluster <- function(M) {
     igraph::membership() %>% 
     factor()
   
-  # message("Community structure detecting based on the leading eigenvector of the community matrix: igraph::cluster_leading_eigen")
-  # igraph::V(g)$eigen_cluster <- igraph::cluster_leading_eigen(g) %>% 
-  #   igraph::membership() %>% 
-  #   factor()
+  message("Community structure detecting based on the leading eigenvector of the community matrix: igraph::cluster_leading_eigen")
+  igraph::V(g)$eigen_cluster <- igraph::cluster_leading_eigen(g) %>% 
+    igraph::membership() %>% 
+    factor()
   
-  # message("Finding communities in graphs based on statistical mechanics: igraph::cluster_spinglass")
-  # igraph::V(g)$spinglass_cluster <- igraph::cluster_spinglass(g) %>% 
-  #   igraph::membership() %>% 
-  #   factor()
+  message("Finding communities in graphs based on statistical mechanics: igraph::cluster_spinglass")
+  igraph::V(g)$spinglass_cluster <- igraph::cluster_spinglass(g) %>% 
+    igraph::membership() %>% 
+    factor()
   
   return(g)
 }
@@ -169,7 +169,7 @@ netproj_cluster_diagnostics <- function(g) {
 
 # netproj_cluster_diagnostics(g)
 
-netproj_plot_communities <- function(g, igraph_algorithm, N = 15, title = "") {
+netproj_plot_communities <- function(g, igraph_algorithm, N = 15, title = "", ncol = 3) {
   stopifnot(igraph_algorithm %in% c("louvain_cluster", "greedy_cluster", "walktrap_cluster", "spinglass_cluster", "eigen_cluster"))
   
   algo <- sym(igraph_algorithm)
@@ -181,7 +181,7 @@ netproj_plot_communities <- function(g, igraph_algorithm, N = 15, title = "") {
     ggplot(aes(x = fct_reorder(name, users), y = users)) + 
     geom_col(aes(alpha = log(users)), show.legend = FALSE) +
     coord_flip() + 
-    facet_wrap(vars(!!algo), scales = "free", ncol = 3) +
+    facet_wrap(vars(!!algo), scales = "free", ncol = ncol) +
     labs(x = NULL, y = NULL, title = title, caption = igraph_algorithm)
   
 }
