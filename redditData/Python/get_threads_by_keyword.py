@@ -2,7 +2,7 @@
 
 subreddit = reddit.subreddit("all")
 
-top = subreddit.search(r.keyword, limit = 1000) ## maximum limit
+top = subreddit.search(r.keyword, limit = None, sort = "top") ## maximum limit
 date = []
 post_score = []
 num_comments = []

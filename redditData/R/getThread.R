@@ -71,7 +71,7 @@ extractThread <- function(path) {
   df <- full_join(root_df, branches_df, by = c("name", "author", "date", "children", "descendents", "text", "title", "subreddit", "path")) %>% 
     select(name, author, score, text, children, descendents, everything())
   
-  message(paste0(py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left..."))
+  #message(paste0(py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left..."))
   
   return(list(nodes = df, edges = edge_list))
 }

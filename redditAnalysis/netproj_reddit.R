@@ -181,8 +181,9 @@ netproj_plot_communities <- function(g, igraph_algorithm, N = 15, title = "", nc
     ggplot(aes(x = fct_reorder(name, users), y = users)) + 
     geom_col(aes(alpha = log(users)), show.legend = FALSE) +
     coord_flip() + 
-    facet_wrap(vars(!!algo), scales = "free", ncol = ncol) +
-    labs(x = NULL, y = NULL, title = title, caption = igraph_algorithm)
+    facet_wrap(vars(!!algo), scales = "free_y", ncol = ncol) +
+    labs(x = NULL, y = NULL, title = title, caption = igraph_algorithm) +
+    scale_y_continuous(labels = scales::comma)
   
 }
 

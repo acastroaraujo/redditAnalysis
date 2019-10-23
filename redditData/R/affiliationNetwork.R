@@ -21,7 +21,7 @@ create_affiliation_network <- function(list_of_unique_users) {
     output[[i]] <- try(py$subreddit_list(list_of_unique_users[[i]]) %>% map_chr(as.character))
     
     try(pb$tick()$print())
-    message("\n", py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left..")
+    #message("\n", py$reddit$auth$limits$used, " used requests, ", py$reddit$auth$limits$remaining, " left..")
   }
   
   names(output) <- list_of_unique_users

@@ -29,9 +29,9 @@ downloadSubredditURLs <- function(sub) {
 }
 
 
-downloadKeywordURLs <- function(keyword) {
+downloadKeywordURLs <- function(keyword, sub = "all") {
   
-  sub <<- "all"
+  sub <<- sub
   keyword <<- keyword
   
   cat(paste0("Searching for ", keyword, "...\n"))
