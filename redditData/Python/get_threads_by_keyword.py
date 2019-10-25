@@ -1,8 +1,8 @@
 ## Call this script from inside downloadURLs.R 
 
-subreddit = reddit.subreddit("all")
+subreddit = reddit.subreddit(r.sub)
 
-top = subreddit.search(r.keyword, limit = None, sort = "top") ## maximum limit
+top = subreddit.search(r.keyword, limit = None, sort = r.sort_by) ## maximum limit
 date = []
 post_score = []
 num_comments = []

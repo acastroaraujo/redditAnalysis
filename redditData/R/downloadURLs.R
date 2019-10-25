@@ -5,6 +5,7 @@
 
 sub <- "init" 
 keyword <- "init"
+sort_by <- "init"
 ## this is necessary (I think) due to weird scoping and interoperability between R and Python
 message("Any variables in the global environment named 'sub' or 'keyword' have now been replaced.")
 
@@ -29,12 +30,13 @@ downloadSubredditURLs <- function(sub) {
 }
 
 
-downloadKeywordURLs <- function(keyword, sub = "all") {
+downloadKeywordURLs <- function(keyword, sub = "all", sort_by = "top") {
   
   sub <<- sub
+  sort_by <<- sort_by
   keyword <<- keyword
   
-  cat(paste0("Searching for ", keyword, "...\n"))
+  message(paste0("Searching for ", keyword, " in '", sub, "'"))
   source_python("redditData/Python/get_threads_by_keyword.py")
   
   subreddit_df <- tibble(
