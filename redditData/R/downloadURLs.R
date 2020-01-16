@@ -13,7 +13,7 @@ downloadSubredditURLs <- function(sub) {
   
   sub <<- sub
   
-  cat(paste0("Pulling from /r/", sub, "...\n"))
+  message("Pulling from /r/", sub, "...")
   source_python("redditData/Python/get_threads.py")
   
   subreddit_df <- tibble(
